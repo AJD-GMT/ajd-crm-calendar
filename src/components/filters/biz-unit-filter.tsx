@@ -10,7 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { ChevronDown } from 'lucide-react';
 
-const BIZ_UNITS = ['AJ렌터카', 'AJ카플랫', 'AJD'];
+const BIZ_UNITS = ['인터넷', '렌탈', '모바일', '이사', '상조', '공통'];
 
 interface BizUnitFilterProps {
   value: string[];
