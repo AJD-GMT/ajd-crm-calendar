@@ -56,19 +56,20 @@ export function CampaignCard({ campaign, onClick }: CampaignCardProps) {
         {campaign.title}
       </div>
 
-      <div className="flex items-center justify-between gap-1 mt-1">
-        {/* 발송 시간 */}
-        <span className="text-gray-700">
-          {formatTime(campaign.send_at)}
-        </span>
+      {/* 발송 시간 */}
+      <div className="text-gray-700 mt-0.5">
+        {formatTime(campaign.send_at)}
+      </div>
 
-        {/* 반응도 아이콘 */}
+      {/* 발송 규모 + 예상 반응도 */}
+      <div className="flex items-center justify-between mt-0.5 text-gray-600">
+        <span>{formatNumber(campaign.audience_size)}명</span>
         <span className="text-sm">{reactionIcon}</span>
       </div>
 
-      <div className="mt-0.5 text-gray-600">
-        {/* 발송 규모 */}
-        <span>{formatNumber(campaign.audience_size)}명</span>
+      {/* 사업부 */}
+      <div className="mt-0.5 text-gray-500 truncate">
+        {campaign.biz_unit}
       </div>
     </button>
   );
