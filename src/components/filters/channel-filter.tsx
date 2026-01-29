@@ -9,8 +9,7 @@ import {
 } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { ChevronDown } from 'lucide-react';
-
-const CHANNELS = ['카카오톡', 'SMS', '이메일', '푸시', 'LMS'];
+import { CHANNEL_LIST } from '@/constants';
 
 interface ChannelFilterProps {
   value: string[];
@@ -27,10 +26,10 @@ export function ChannelFilter({ value, onChange }: ChannelFilterProps) {
   };
 
   const handleSelectAll = () => {
-    if (value.length === CHANNELS.length) {
+    if (value.length === CHANNEL_LIST.length) {
       onChange([]);
     } else {
-      onChange(CHANNELS);
+      onChange(CHANNEL_LIST);
     }
   };
 
@@ -54,7 +53,7 @@ export function ChannelFilter({ value, onChange }: ChannelFilterProps) {
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="select-all-channel"
-                checked={value.length === CHANNELS.length}
+                checked={value.length === CHANNEL_LIST.length}
                 onCheckedChange={handleSelectAll}
               />
               <Label htmlFor="select-all-channel" className="font-medium cursor-pointer">
@@ -62,7 +61,7 @@ export function ChannelFilter({ value, onChange }: ChannelFilterProps) {
               </Label>
             </div>
             <div className="h-px bg-gray-200" />
-            {CHANNELS.map((channel) => (
+            {CHANNEL_LIST.map((channel) => (
               <div key={channel} className="flex items-center space-x-2">
                 <Checkbox
                   id={`channel-${channel}`}

@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Select,
   SelectContent,
@@ -22,6 +23,7 @@ import {
 } from '@/components/ui/select';
 import { campaignSchema, type CampaignFormValues } from '@/features/campaigns/schemas';
 import { extractDateFromISO, extractTimeFromISO } from '@/lib/utils/date';
+import { BIZ_UNIT_LIST, CHANNEL_LIST } from '@/constants';
 import type { Campaign } from '@/features/campaigns/types';
 
 interface CampaignFormDialogProps {
@@ -32,8 +34,6 @@ interface CampaignFormDialogProps {
   isLoading?: boolean;
 }
 
-const BIZ_UNITS = ['AJ렌터카', 'AJ카플랫', 'AJD'];
-const CHANNELS = ['카카오톡', 'SMS', '이메일', '푸시', 'LMS'];
 const REACTIONS = [
   { value: 'HIGH', label: '높음' },
   { value: 'MID', label: '중간' },
@@ -73,6 +73,9 @@ export function CampaignFormDialog({
   const [sendDate, setSendDate] = useState('');
   const [sendTime, setSendTime] = useState('');
 
+  // 사업부 복수 선택 상태
+  const [selectedBizUnits, setSelectedBizUnits] = useState<string[]>([]);
+
   // 캠페인 데이터가 변경되면 폼 초기화
   useEffect(() => {
     if (campaign) {
@@ -82,6 +85,10 @@ export function CampaignFormDialog({
 
       setSendDate(dateStr);
       setSendTime(timeStr);
+
+      // 사업부 파싱 (콤마 구분)
+      const bizUnits = campaign.biz_unit.split(',').map(s => s.trim()).filter(Boolean);
+      setSelectedBizUnits(bizUnits);
 
       reset({
         title: campaign.title,
@@ -95,6 +102,7 @@ export function CampaignFormDialog({
     } else {
       setSendDate('');
       setSendTime('');
+      setSelectedBizUnits([]);
       reset({
         title: '',
         send_at: '',
@@ -114,6 +122,20 @@ export function CampaignFormDialog({
     }
   }, [sendDate, sendTime, setValue]);
 
+  // 사업부 선택이 변경되면 biz_unit 업데이트
+  useEffect(() => {
+    setValue('biz_unit', selectedBizUnits.join(', '));
+  }, [selectedBizUnits, setValue]);
+
+  // 사업부 체크박스 토글
+  const handleBizUnitToggle = (unit: string, checked: boolean) => {
+    if (checked) {
+      setSelectedBizUnits(prev => [...prev, unit]);
+    } else {
+      setSelectedBizUnits(prev => prev.filter(u => u !== unit));
+    }
+  };
+
   const handleFormSubmit = async (data: CampaignFormValues) => {
     await onSubmit(data);
     reset();
@@ -124,7 +146,6 @@ export function CampaignFormDialog({
     onClose();
   };
 
-  const bizUnit = watch('biz_unit');
   const channel = watch('channel');
   const expectedReaction = watch('expected_reaction');
 
@@ -185,27 +206,27 @@ export function CampaignFormDialog({
             <p className="text-sm text-red-500">{errors.send_at.message}</p>
           )}
 
-          {/* 사업부 */}
+          {/* 사업부 (복수 선택) */}
           <div className="space-y-2">
-            <Label htmlFor="biz_unit">
+            <Label>
               사업부 <span className="text-red-500">*</span>
+              <span className="text-xs text-gray-500 ml-2">(복수 선택 가능)</span>
             </Label>
-            <Select
-              value={bizUnit}
-              onValueChange={(value) => setValue('biz_unit', value)}
-              disabled={isLoading}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="사업부를 선택하세요" />
-              </SelectTrigger>
-              <SelectContent>
-                {BIZ_UNITS.map((unit) => (
-                  <SelectItem key={unit} value={unit}>
-                    {unit}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="grid grid-cols-3 gap-2 p-3 border rounded-md bg-gray-50">
+              {BIZ_UNIT_LIST.map((unit) => (
+                <label
+                  key={unit}
+                  className="flex items-center gap-2 text-sm cursor-pointer"
+                >
+                  <Checkbox
+                    checked={selectedBizUnits.includes(unit)}
+                    onCheckedChange={(checked) => handleBizUnitToggle(unit, checked as boolean)}
+                    disabled={isLoading}
+                  />
+                  {unit}
+                </label>
+              ))}
+            </div>
             {errors.biz_unit && (
               <p className="text-sm text-red-500">{errors.biz_unit.message}</p>
             )}
@@ -225,7 +246,7 @@ export function CampaignFormDialog({
                 <SelectValue placeholder="채널을 선택하세요" />
               </SelectTrigger>
               <SelectContent>
-                {CHANNELS.map((ch) => (
+                {CHANNEL_LIST.map((ch) => (
                   <SelectItem key={ch} value={ch}>
                     {ch}
                   </SelectItem>

@@ -9,8 +9,7 @@ import {
 } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { ChevronDown } from 'lucide-react';
-
-const BIZ_UNITS = ['인터넷', '렌탈', '모바일', '이사', '상조', '공통'];
+import { BIZ_UNIT_LIST } from '@/constants';
 
 interface BizUnitFilterProps {
   value: string[];
@@ -27,10 +26,10 @@ export function BizUnitFilter({ value, onChange }: BizUnitFilterProps) {
   };
 
   const handleSelectAll = () => {
-    if (value.length === BIZ_UNITS.length) {
+    if (value.length === BIZ_UNIT_LIST.length) {
       onChange([]);
     } else {
-      onChange(BIZ_UNITS);
+      onChange(BIZ_UNIT_LIST);
     }
   };
 
@@ -54,7 +53,7 @@ export function BizUnitFilter({ value, onChange }: BizUnitFilterProps) {
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="select-all"
-                checked={value.length === BIZ_UNITS.length}
+                checked={value.length === BIZ_UNIT_LIST.length}
                 onCheckedChange={handleSelectAll}
               />
               <Label htmlFor="select-all" className="font-medium cursor-pointer">
@@ -62,7 +61,7 @@ export function BizUnitFilter({ value, onChange }: BizUnitFilterProps) {
               </Label>
             </div>
             <div className="h-px bg-gray-200" />
-            {BIZ_UNITS.map((unit) => (
+            {BIZ_UNIT_LIST.map((unit) => (
               <div key={unit} className="flex items-center space-x-2">
                 <Checkbox
                   id={`biz-${unit}`}
