@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { format } from 'date-fns';
 import {
   Dialog,
   DialogContent,
@@ -22,6 +21,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { campaignSchema, type CampaignFormValues } from '@/features/campaigns/schemas';
+import { extractDateFromISO, extractTimeFromISO } from '@/lib/utils/date';
 import type { Campaign } from '@/features/campaigns/types';
 
 interface CampaignFormDialogProps {
@@ -76,9 +76,9 @@ export function CampaignFormDialog({
   // 캠페인 데이터가 변경되면 폼 초기화
   useEffect(() => {
     if (campaign) {
-      const sendDateTime = new Date(campaign.send_at);
-      const dateStr = format(sendDateTime, 'yyyy-MM-dd');
-      const timeStr = format(sendDateTime, 'HH:mm');
+      // 타임존 변환 없이 문자열에서 직접 추출
+      const dateStr = extractDateFromISO(campaign.send_at);
+      const timeStr = extractTimeFromISO(campaign.send_at);
 
       setSendDate(dateStr);
       setSendTime(timeStr);

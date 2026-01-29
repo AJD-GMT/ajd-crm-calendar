@@ -5,7 +5,7 @@ import { useCalendar } from '@/features/calendar/hooks/use-calendar';
 import { useCampaigns } from '@/features/campaigns/queries';
 import { CalendarHeader } from './calendar-header';
 import { CalendarDayCell } from './calendar-day-cell';
-import { formatDateKey } from '@/lib/utils/date';
+import { formatDateKey, extractDateFromISO, extractTimeFromISO } from '@/lib/utils/date';
 import type { Campaign, CampaignFilters } from '@/features/campaigns/types';
 
 const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
@@ -26,18 +26,21 @@ export function CrmCalendar({ onCampaignClick, filters }: CrmCalendarProps) {
     const grouped: Record<string, Campaign[]> = {};
 
     campaigns.forEach((campaign) => {
-      const dateKey = formatDateKey(new Date(campaign.send_at));
+      // 타임존 변환 없이 날짜 문자열에서 직접 추출
+      const dateKey = extractDateFromISO(campaign.send_at);
       if (!grouped[dateKey]) {
         grouped[dateKey] = [];
       }
       grouped[dateKey].push(campaign);
     });
 
-    // 각 날짜별로 시간순 정렬
+    // 각 날짜별로 시간순 정렬 (문자열 비교로 충분)
     Object.keys(grouped).forEach((dateKey) => {
-      grouped[dateKey].sort(
-        (a, b) => new Date(a.send_at).getTime() - new Date(b.send_at).getTime()
-      );
+      grouped[dateKey].sort((a, b) => {
+        const timeA = extractTimeFromISO(a.send_at);
+        const timeB = extractTimeFromISO(b.send_at);
+        return timeA.localeCompare(timeB);
+      });
     });
 
     return grouped;

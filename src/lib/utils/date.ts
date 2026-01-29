@@ -1,6 +1,54 @@
 /**
  * 날짜 유틸리티 함수
+ * 모든 날짜는 한국 시간(KST) 기준으로 처리
  */
+
+/**
+ * ISO 문자열에서 날짜 부분만 추출 (YYYY-MM-DD)
+ * 타임존 변환 없이 문자열에서 직접 추출
+ */
+export function extractDateFromISO(isoStr: string): string {
+  // "2026-01-29T18:00:00" 또는 "2026-01-29T18:00:00.000Z" 또는 "2026-01-29T18:00:00+09:00"
+  const match = isoStr.match(/^(\d{4}-\d{2}-\d{2})/);
+  return match ? match[1] : isoStr.split('T')[0];
+}
+
+/**
+ * ISO 문자열에서 시간 부분만 추출 (HH:mm)
+ * 타임존 변환 없이 문자열에서 직접 추출
+ */
+export function extractTimeFromISO(isoStr: string): string {
+  const match = isoStr.match(/T(\d{2}):(\d{2})/);
+  return match ? `${match[1]}:${match[2]}` : '00:00';
+}
+
+/**
+ * ISO 문자열에서 년, 월, 일 추출 (타임존 변환 없음)
+ */
+export function parseISODateParts(isoStr: string): { year: number; month: number; day: number } {
+  const dateStr = extractDateFromISO(isoStr);
+  const [year, month, day] = dateStr.split('-').map(Number);
+  return { year, month: month - 1, day }; // month는 0-indexed
+}
+
+/**
+ * ISO 문자열에서 시, 분 추출 (타임존 변환 없음)
+ */
+export function parseISOTimeParts(isoStr: string): { hours: number; minutes: number } {
+  const timeStr = extractTimeFromISO(isoStr);
+  const [hours, minutes] = timeStr.split(':').map(Number);
+  return { hours, minutes };
+}
+
+/**
+ * ISO 문자열을 Date 객체로 변환 (로컬 타임존으로, 타임존 정보 무시)
+ * DB에 저장된 한국 시간을 그대로 사용
+ */
+export function parseISOAsLocal(isoStr: string): Date {
+  const { year, month, day } = parseISODateParts(isoStr);
+  const { hours, minutes } = parseISOTimeParts(isoStr);
+  return new Date(year, month, day, hours, minutes);
+}
 
 /**
  * 특정 년/월의 모든 날짜 배열 반환 (이전/다음 월 날짜 포함)
@@ -76,16 +124,7 @@ export function formatDateKey(date: Date): string {
  * 시간을 HH:MM 형식으로 포맷 (타임존 변환 없이 문자열에서 직접 추출)
  */
 export function formatTime(dateStr: string): string {
-  // ISO 형식: "2026-01-29T18:00:00" 또는 "2026-01-29T18:00:00.000Z"
-  const match = dateStr.match(/T(\d{2}):(\d{2})/);
-  if (match) {
-    return `${match[1]}:${match[2]}`;
-  }
-  // 폴백: 기존 방식
-  const date = new Date(dateStr);
-  const hours = String(date.getHours()).padStart(2, '0');
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  return `${hours}:${minutes}`;
+  return extractTimeFromISO(dateStr);
 }
 
 /**

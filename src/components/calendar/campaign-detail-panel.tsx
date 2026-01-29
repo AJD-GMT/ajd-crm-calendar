@@ -1,12 +1,13 @@
 'use client';
 
-import { format } from 'date-fns';
-import { ko } from 'date-fns/locale';
 import { Calendar, Clock, Users, TrendingUp, MessageSquare, Edit, Copy, Trash2 } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { parseISODateParts, extractTimeFromISO } from '@/lib/utils/date';
 import type { Campaign } from '@/features/campaigns/types';
+
+const WEEKDAY_NAMES = ['일', '월', '화', '수', '목', '금', '토'];
 
 interface CampaignDetailPanelProps {
   campaign: Campaign | null;
@@ -41,7 +42,10 @@ export function CampaignDetailPanel({
 }: CampaignDetailPanelProps) {
   if (!campaign) return null;
 
-  const sendDate = new Date(campaign.send_at);
+  // 타임존 변환 없이 문자열에서 직접 추출
+  const { year, month, day } = parseISODateParts(campaign.send_at);
+  const time = extractTimeFromISO(campaign.send_at);
+  const weekday = WEEKDAY_NAMES[new Date(year, month, day).getDay()];
   const reactionInfo = REACTION_LABELS[campaign.expected_reaction] || REACTION_LABELS.MID;
   const bizUnitColor = BIZ_UNIT_COLORS[campaign.biz_unit] || 'bg-gray-100 text-gray-800';
 
@@ -65,7 +69,7 @@ export function CampaignDetailPanel({
               <span>발송 날짜</span>
             </div>
             <p className="text-base font-medium">
-              {format(sendDate, 'yyyy년 MM월 dd일 (EEE)', { locale: ko })}
+              {year}년 {String(month + 1).padStart(2, '0')}월 {String(day).padStart(2, '0')}일 ({weekday})
             </p>
           </div>
 
@@ -76,7 +80,7 @@ export function CampaignDetailPanel({
               <span>발송 시간</span>
             </div>
             <p className="text-base font-medium">
-              {format(sendDate, 'HH:mm')}
+              {time}
             </p>
           </div>
 
