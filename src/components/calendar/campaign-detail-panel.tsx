@@ -56,7 +56,7 @@ export function CampaignDetailPanel({
           <SheetTitle>캠페인 상세</SheetTitle>
         </SheetHeader>
 
-        <div className="mt-6 space-y-6">
+        <div className="mt-6 space-y-6 overflow-y-auto max-h-[calc(100vh-120px)] pb-6">
           {/* 캠페인명 */}
           <div>
             <h3 className="text-lg font-semibold text-gray-900">{campaign.title}</h3>
