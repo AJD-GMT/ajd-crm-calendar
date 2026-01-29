@@ -15,6 +15,7 @@ export const campaignSchema = z.object({
   expected_reaction: z.enum(['HIGH', 'MID', 'LOW'], {
     message: '예상 반응도를 선택해주세요',
   }),
+  send_message: z.string().optional(),
   cs_memo: z.string().optional(),
 });
 

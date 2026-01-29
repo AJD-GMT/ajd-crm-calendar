@@ -90,6 +90,7 @@ export async function POST(request: NextRequest) {
         channel: data.channel,
         audience_size: data.audience_size,
         expected_reaction: data.expected_reaction,
+        send_message: data.send_message || null,
         cs_memo: data.cs_memo || null,
         created_by: user.id,
       })

@@ -18,6 +18,7 @@ export interface Database {
           channel: string;
           audience_size: number;
           expected_reaction: 'HIGH' | 'MID' | 'LOW';
+          send_message: string | null;
           cs_memo: string | null;
           created_by: string | null;
           created_at: string;
@@ -31,6 +32,7 @@ export interface Database {
           channel: string;
           audience_size?: number;
           expected_reaction?: 'HIGH' | 'MID' | 'LOW';
+          send_message?: string | null;
           cs_memo?: string | null;
           created_by?: string | null;
           created_at?: string;
@@ -44,6 +46,7 @@ export interface Database {
           channel?: string;
           audience_size?: number;
           expected_reaction?: 'HIGH' | 'MID' | 'LOW';
+          send_message?: string | null;
           cs_memo?: string | null;
           created_by?: string | null;
           created_at?: string;

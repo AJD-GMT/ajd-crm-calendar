@@ -124,6 +124,19 @@ export function CampaignDetailPanel({
             </p>
           </div>
 
+          {/* 발송 메세지 */}
+          {campaign.send_message && (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                <MessageSquare className="h-4 w-4" />
+                <span>발송 메세지</span>
+              </div>
+              <p className="text-sm text-gray-700 bg-blue-50 p-3 rounded-md whitespace-pre-wrap border border-blue-100">
+                {campaign.send_message}
+              </p>
+            </div>
+          )}
+
           {/* CS 참고 메모 */}
           {campaign.cs_memo && (
             <div className="space-y-2">

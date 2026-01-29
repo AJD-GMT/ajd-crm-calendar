@@ -22,5 +22,6 @@ export interface CampaignFormData {
   channel: string;
   audience_size: number;
   expected_reaction: ExpectedReaction;
+  send_message?: string;
   cs_memo?: string;
 }

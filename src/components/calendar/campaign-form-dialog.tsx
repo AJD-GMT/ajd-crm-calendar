@@ -65,6 +65,7 @@ export function CampaignFormDialog({
       channel: '',
       audience_size: 0,
       expected_reaction: 'MID',
+      send_message: '',
       cs_memo: '',
     },
   });
@@ -97,6 +98,7 @@ export function CampaignFormDialog({
         channel: campaign.channel,
         audience_size: campaign.audience_size,
         expected_reaction: campaign.expected_reaction,
+        send_message: campaign.send_message || '',
         cs_memo: campaign.cs_memo || '',
       });
     } else {
@@ -110,6 +112,7 @@ export function CampaignFormDialog({
         channel: '',
         audience_size: 0,
         expected_reaction: 'MID',
+        send_message: '',
         cs_memo: '',
       });
     }
@@ -298,6 +301,21 @@ export function CampaignFormDialog({
             </Select>
             {errors.expected_reaction && (
               <p className="text-sm text-red-500">{errors.expected_reaction.message}</p>
+            )}
+          </div>
+
+          {/* 발송 메세지 */}
+          <div className="space-y-2">
+            <Label htmlFor="send_message">발송 메세지</Label>
+            <Textarea
+              id="send_message"
+              {...register('send_message')}
+              placeholder="발송할 메세지 내용을 입력하세요"
+              rows={4}
+              disabled={isLoading}
+            />
+            {errors.send_message && (
+              <p className="text-sm text-red-500">{errors.send_message.message}</p>
             )}
           </div>
 

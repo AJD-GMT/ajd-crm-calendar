@@ -77,6 +77,7 @@ export async function PUT(request: NextRequest, context: RouteContext) {
         channel: data.channel,
         audience_size: data.audience_size,
         expected_reaction: data.expected_reaction,
+        send_message: data.send_message || null,
         cs_memo: data.cs_memo || null,
         updated_at: new Date().toISOString(),
       })

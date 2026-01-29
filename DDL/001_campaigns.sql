@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS campaigns (
   audience_size INTEGER NOT NULL DEFAULT 0,
   expected_reaction VARCHAR(10) NOT NULL DEFAULT 'MID'
     CHECK (expected_reaction IN ('HIGH', 'MID', 'LOW')),
+  send_message TEXT,
   cs_memo TEXT,
   created_by UUID REFERENCES auth.users(id),
   created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -64,6 +65,7 @@ COMMENT ON COLUMN campaigns.biz_unit IS '사업부 (인터넷/렌탈/모바일/�
 COMMENT ON COLUMN campaigns.channel IS '발송 채널 (알림톡/친구톡/SMS/이메일)';
 COMMENT ON COLUMN campaigns.audience_size IS '발송 대상 수';
 COMMENT ON COLUMN campaigns.expected_reaction IS '예상 반응도 (HIGH/MID/LOW)';
+COMMENT ON COLUMN campaigns.send_message IS '발송 메세지 내용';
 COMMENT ON COLUMN campaigns.cs_memo IS 'CS 참고 메모';
 COMMENT ON COLUMN campaigns.created_by IS '생성자 ID';
 COMMENT ON COLUMN campaigns.created_at IS '생성일시';
